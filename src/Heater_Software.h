@@ -1,3 +1,6 @@
 #include "RoveComm.h"
 
-// define variables
+// temperature data from each sensor
+float temp1 = 0;
+float temp2 = 0;
+float temp3 = 0;

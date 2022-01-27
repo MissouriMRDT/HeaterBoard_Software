@@ -16,10 +16,7 @@
  * Establish temperature variable in header file
  *  Separate variables for each temperature sensor
  * Only send one signal when temperature goes outside of the range 
- *  If statement inside of while loop? There's probably a better way to do this though
- *    While the mosfet is on, if the temperature is above some value, turn the mosfet off
- *    Same idea for when the mosfet is off
- *  
+ *  If statements
  */
 
 void setup()
@@ -29,5 +26,36 @@ void setup()
 
 void loop()
 {
+  if temp1 >= 105
+  {
+    // stop sending power to OUT2 pin
+  }
+  
+  if temp2 >= 105
+  {
+    // stop sending power to OUT1C pin
+  }
+  
+  if temp3 >= 105
+  {
+    // stop sending power to OUT1D pin
+  }
+
+  
+  if temp1 <= 95
+  {
+    // start sending power to OUT2 pin
+  }
+  
+  if temp2 <= 95
+  {
+    // start sending power to OUT1C pin
+  }
+  
+  if temp3 <= 95
+  {
+    // start sending power to OUT1D pin
+  }
+
   
 }

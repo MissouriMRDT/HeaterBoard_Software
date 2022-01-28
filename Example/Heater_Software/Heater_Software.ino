@@ -8,33 +8,33 @@ void setup()
 void loop()
 {
   // turns off heaters at high temperatures
-  if temp1 >= 105
+  if (map(temp1, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) >= 105)
   {
     digitalWrite(PIN_2, LOW);
   }
   
-  if temp2 >= 105
+  if (map(temp2, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) >= 105)
   {
     digitalWrite(PIN_6, LOW);
   }
   
-  if temp3 >= 105
+  if (map(temp3, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) >= 105)
   {
     digitalWrite(PIN_9, LOW);
   }
 
   // turns on heaters at low temperatures
-  if temp1 <= 95
+  if (map(temp1, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) <= 95)
   {
     digitalWrite(PIN_2, HIGH);
   }
   
-  if temp2 <= 95
+  if (map(temp2, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) <= 95)
   {
     digitalWrite(PIN_6, HIGH);
   }
   
-  if temp3 <= 95
+  if (map(temp3, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) <= 95)
   {
     digitalWrite(PIN_9, HIGH);
   }

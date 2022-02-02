@@ -2,42 +2,45 @@
 
 void setup()
 {
+  // inputs to MOSFET circuits
+  pinMode(PIN_2, OUTPUT);
+  pinMode(PIN_6, OUTPUT);
+  pinMode(PIN_9, OUTPUT);
   
+  // data from temperature sensors
+  pinMode(PIN_A17, INPUT);
+  pinMode(PIN_A16, INPUT);
+  pinMode(PIN_A15, INPUT);
+  float temps[3] = {temp1Celsius, temp2Celsius, temp3Celsius};
+
+  Serial.begin(9600);
+  
+  RoveComm.begin(RC_HEATERBOARD_FOURTHOCTET, &TCPSERVER);
 }
 
 void loop()
 {
-  // turns off heaters at high temperatures
-  if (map(temp1, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) >= 105)
+  for (int i == 0; i < 3; i++)
   {
-    digitalWrite(PIN_2, LOW);
+      switch(temps[i])
+    {
+      case >= 105 :
+        digitalWrite(TEMP_SENSE_PIN_1, LOW);
+        break;
+      case <= 95  :
+        digitalWrite(TEMP_SENSE_PIN_1, HIGH);
+        break;
+    }
   }
+  ////// Still Needed: //////
+  // switch case for RoveComm needed
+  // communication with basestation
+  // overheat warning for basestation
   
-  if (map(temp2, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) >= 105)
-  {
-    digitalWrite(PIN_6, LOW);
-  }
   
-  if (map(temp3, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) >= 105)
+  if(millis()-last_update_time >= ROVECOMM_UPDATE_RATE)
   {
-    digitalWrite(PIN_9, LOW);
-  }
 
-  // turns on heaters at low temperatures
-  if (map(temp1, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) <= 95)
-  {
-    digitalWrite(PIN_2, HIGH);
   }
-  
-  if (map(temp2, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) <= 95)
-  {
-    digitalWrite(PIN_6, HIGH);
-  }
-  
-  if (map(temp3, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) <= 95)
-  {
-    digitalWrite(PIN_9, HIGH);
-  }
-
   
 }

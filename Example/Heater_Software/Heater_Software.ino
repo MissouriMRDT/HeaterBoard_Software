@@ -39,29 +39,27 @@ void loop()
   float temps[3] = {temp1Celsius, temp2Celsius, temp3Celsius};
   
   // monitoring temperature values and toggling individual heaters
-  for (int i == 0; i < 3; i++)
-  {
-      switch(temps[i])
-    {
-      case >= 105 :
-        digitalWrite(TEMP_PINS[i], LOW);
-        break;
-      case <= 95  :
-        digitalWrite(TEMP_PINS[i], HIGH);
-        break;
-      case >= 115 :
-        Rovecomm.write(RC_HEATERBOARD_OVERHEAT_DATA_ID); // sends warning to basestation
-        break;
-    }
-  }
-
-  
   switch (packet.data_id)
   {
-    case RC_HEATERBOARD_HEATERTOGGLE_DATA_ID  :
-      Serial.println("The heater has been toggled")
+    case  RC_HEATERBOARD_HEATERTOGGLE_DATA_ID  :
+      for (int i == 0; i < 3; i++)
+      {
+        switch(temps[i])
+        {
+          case >= 105 :
+            digitalWrite(TEMP_PINS[i], LOW);
+            break;
+          case <= 95  :
+            digitalWrite(TEMP_PINS[i], HIGH);
+            break;
+          case >= 115 :
+            Rovecomm.write(RC_HEATERBOARD_OVERHEAT_DATA_ID, temps); // sends warning to basestation
+            break;
+        }
+      }
       break;
   }
+  
   
   // sends data to basestation
   if(millis()-last_update_time >= ROVECOMM_UPDATE_RATE)

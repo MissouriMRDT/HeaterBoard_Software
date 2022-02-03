@@ -29,7 +29,6 @@ rovecomm_packet packet;
 //timekeeping variables
 uint32_t last_update_time;
 
-//declare the Ethernet Server in the top level sketch with the requisite port ID any time you want to use RoveComm
+// declaring Ethernet connection
 EthernetServer TCPServer(RC_ROVECOMM_HEATERBOARD_PORT);
 
-last_update_time = millis();

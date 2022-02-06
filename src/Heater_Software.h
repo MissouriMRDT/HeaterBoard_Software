@@ -3,9 +3,9 @@
 
 // conversions from ADC values to Celsius
 float TEMP_ADC_MIN = 0;
-float TEMP_ADC_MAX = 0;
+float TEMP_ADC_MAX = 4096; //bits
 float TEMP_MIN = 0;
-float TEMP_MAX = 0;
+float TEMP_MAX = 160000; // mdeg C
 
 // signals for gate drivers
 #define TEMP_SENSE_PIN_1    2

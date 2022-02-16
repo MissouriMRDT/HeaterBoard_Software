@@ -40,63 +40,53 @@ void loop()
   
   // monitoring temperature values and toggling individual heaters
   
-
-  for (int i == 0; i < 3; i++)
+  uint8_t heater_overheat = 0;
+  for (int i = 0; i < 3; i++)
   {
-    switch(temps[i])
+    if (temps[i] >= 105)
     {
-      case >= 105 :
-        digitalWrite(TEMP_PINS[i], LOW);
-        break;
-      case <= 95  :
-        digitalWrite(TEMP_PINS[i], HIGH);
-        break;
-      case >= 115 :
-        Rovecomm.write(RC_HEATERBOARD_OVERHEAT_DATA_ID, temps); // sends warning to basestation
-        break;
+      digitalWrite(TEMP_PINS[i], LOW);
+    }
+    
+    if (temps[i] <= 95)
+    {
+      digitalWrite(TEMP_PINS[i], HIGH);
+    }
+
+    if (temps[i] >= 115)
+    {
+      heater_overheat |= i << 1;
+      RoveComm.write(RC_HEATERBOARD_OVERHEAT_DATA_ID, RC_HEATERBOARD_OVERHEAT_DATA_COUNT, heater_overheat);
     }
   }
+  
 
   switch (packet.data_id)
   {
     case RC_HEATERBOARD_HEATERTOGGLE_DATA_ID  :
+
       uint8_t* heatertoggle = packet.data[0];
-      uint8_t* temp = 0;
-      if ((heatertoggle & 1 << temp) == true)
+      for (uint8_t i = 0; i < 3; i++)
       {
-        digitalWrite(TEMP_SENSE_PIN_1, HIGH);
+        if ((heatertoggle[0] & 1 << i) == 1)
+        {
+          digitalWrite(TEMP_PINS[i], HIGH);
+          heater_enabled |= i << 1;
+        }
+        else
+        {
+          digitalWrite(TEMP_PINS[i], LOW);
+          heater_enabled |= i << 0;
+        }
       }
-      else
-      {
-        digitalWrite(TEMP_SENSE_PIN_1, LOW);
-      }
-      temp++;
       
-      if ((heatertoggle & 1 << temp) == true)
-      {
-        digitalWrite(TEMP_SENSE_PIN_2, HIGH);
-      }
-      else
-      {
-        digitalWrite(TEMP_SENSE_PIN_2, LOW);
-      }
-      temp++;
-      
-      if ((heatertoggle & 1 << temp) == true)
-      {
-        digitalWrite(TEMP_SENSE_PIN_3, HIGH);
-      }
-      else
-      {
-        digitalWrite(TEMP_SENSE_PIN_3, LOW);
-      }
-      temp++;
   }
   
   // sends data to basestation
   if(millis()-last_update_time >= ROVECOMM_UPDATE_RATE)
   {
-    Rovecomm.write(RC_HEATERBOARD_HEATERENABLED_DATA_ID, RC_HEATERBOARD_THERMO_VALUES_DATA_ID, RC_HEATERBOARD_THERMO_VALUES_DATA_COUNT, temps);
+    RoveComm.write(RC_HEATERBOARD_HEATERENABLED_DATA_ID, RC_HEATERBOARD_HEATERENABLED_DATA_COUNT, heater_enabled);
+    RoveComm.write(RC_HEATERBOARD_THERMO_VALUES_DATA_ID, RC_HEATERBOARD_THERMO_VALUES_DATA_COUNT, temps);
     last_update_time = millis();
   }
 }

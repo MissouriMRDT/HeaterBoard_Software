@@ -25,6 +25,7 @@ int TEMP_PINS[3] = {TEMP_SENSE_PIN_1, TEMP_SENSE_PIN_2, TEMP_SENSE_PIN_3};
 RoveCommEthernet RoveComm;
 rovecomm_packet packet;
 
+uint8_t heater_enabled = 0;
 
 //timekeeping variables
 uint32_t last_update_time;

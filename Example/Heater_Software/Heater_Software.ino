@@ -61,11 +61,36 @@ void loop()
   {
     case RC_HEATERBOARD_HEATERTOGGLE_DATA_ID  :
       uint8_t* heatertoggle = packet.data[0];
-      uint8_t* heatertoggle2 = packet.data[1];
-      if (heatertoggle == true)
+      uint8_t* temp = 0;
+      if ((heatertoggle & 1 << temp) == true)
       {
-        digitalWrite(TEMP_SENSE_PIN_1, heatertoggle2);
+        digitalWrite(TEMP_SENSE_PIN_1, HIGH);
       }
+      else
+      {
+        digitalWrite(TEMP_SENSE_PIN_1, LOW);
+      }
+      temp++;
+      
+      if ((heatertoggle & 1 << temp) == true)
+      {
+        digitalWrite(TEMP_SENSE_PIN_2, HIGH);
+      }
+      else
+      {
+        digitalWrite(TEMP_SENSE_PIN_2, LOW);
+      }
+      temp++;
+      
+      if ((heatertoggle & 1 << temp) == true)
+      {
+        digitalWrite(TEMP_SENSE_PIN_3, HIGH);
+      }
+      else
+      {
+        digitalWrite(TEMP_SENSE_PIN_3, LOW);
+      }
+      temp++;
   }
   
   // sends data to basestation

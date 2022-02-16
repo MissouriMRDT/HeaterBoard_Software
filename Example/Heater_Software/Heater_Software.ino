@@ -71,12 +71,12 @@ void loop()
         if ((heatertoggle[0] & 1 << i) == 1)
         {
           digitalWrite(TEMP_PINS[i], HIGH);
-          heater_enabled |= i << 1;
+          heater_enabled ^= i << 1;
         }
         else
         {
           digitalWrite(TEMP_PINS[i], LOW);
-          heater_enabled |= i << 0;
+          heater_enabled ^= i << 1;
         }
       }
       

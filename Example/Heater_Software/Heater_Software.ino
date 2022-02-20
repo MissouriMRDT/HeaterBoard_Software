@@ -3,9 +3,9 @@
 void setup()
 {
   // inputs to MOSFET circuits
-  pinMode(HEATER_TOGGLE_PIN_1, OUTPUT);
-  pinMode(HEATER_TOGGLE_PIN_2, OUTPUT);
-  pinMode(HEATER_TOGGLE_PIN_3, OUTPUT);
+  pinMode(TOGGLE_PINS[0], OUTPUT);
+  pinMode(TOGGLE_PINS[1], OUTPUT);
+  pinMode(TOGGLE_PINS[2], OUTPUT);
   
   // data from temperature sensors
   pinMode(THERMO_DATA_1, INPUT);
@@ -27,6 +27,29 @@ void setup()
 
 void loop()
 {
+  packet = RoveComm.read();
+  // monitoring temperature values and toggling individual heaters
+  switch (packet.data_id)
+  {
+    case RC_HEATERBOARD_HEATERTOGGLE_DATA_ID  :
+      for (uint8_t i = 0; i < 3; i++)
+      {
+        if ((packet.data[0] & 1 << i) == 1)
+        {
+          digitalWrite(TOGGLE_PINS[i], HIGH);
+          heater_enabled ^= 1 << i;
+          toggleOn ^= 1 << i;
+        }
+        else
+        {
+          digitalWrite(TOGGLE_PINS[i], LOW);
+          heater_enabled ^= 1 << i;
+          toggleOn ^= 1 << i;
+        }
+      }
+      break;
+  }
+
   // temperature data from each sensor
   float temp1 = analogRead(THERMO_DATA_1);
   float temp2 = analogRead(THERMO_DATA_2);
@@ -37,18 +60,16 @@ void loop()
   float temp3Celsius = map(temp3, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000;
 
   float temps[3] = {temp1Celsius, temp2Celsius, temp3Celsius};
-  
-  // monitoring temperature values and toggling individual heaters
-  
+
   uint8_t heater_overheat = 0;
   for (uint8_t i = 0; i < 3; i++)
   {
-    if (temps[i] >= 105)
+    if (temps[i] >= 105 || !(toggleOn & 1 << i) )
     {
       digitalWrite(TOGGLE_PINS[i], LOW);
     }
     
-    if (temps[i] <= 95)
+    if (temps[i] <= 95 && (toggleOn & 1 << i) )
     {
       digitalWrite(TOGGLE_PINS[i], HIGH);
     }
@@ -57,27 +78,6 @@ void loop()
     {
       heater_overheat |= 1 << i;
     }
-  }
-  
-
-  switch (packet.data_id)
-  {
-    case RC_HEATERBOARD_HEATERTOGGLE_DATA_ID  :
-
-      for (uint8_t i = 0; i < 3; i++)
-      {
-        if ((packet.data[0] & 1 << i) == 1)
-        {
-          digitalWrite(TOGGLE_PINS[i], HIGH);
-          heater_enabled ^= 1 << i;
-        }
-        else
-        {
-          digitalWrite(TOGGLE_PINS[i], LOW);
-          heater_enabled ^= 1 << i;
-        }
-      }
-      
   }
   
   // sends data to basestation

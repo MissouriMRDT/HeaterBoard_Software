@@ -13,6 +13,7 @@ float TEMP_MAX = 160000; // mdeg C
 #define HEATER_TOGGLE_PIN_3    9
 
 uint8_t TOGGLE_PINS[3] = {HEATER_TOGGLE_PIN_1, HEATER_TOGGLE_PIN_2, HEATER_TOGGLE_PIN_3};
+uint8_t toggleOn = 0;
 
 // data from sensors
 #define THERMO_DATA_1   A17

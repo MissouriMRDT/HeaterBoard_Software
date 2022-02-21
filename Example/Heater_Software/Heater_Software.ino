@@ -32,21 +32,22 @@ void loop()
   switch (packet.data_id)
   {
     case RC_HEATERBOARD_HEATERTOGGLE_DATA_ID  :
-      for (uint8_t i = 0; i < 3; i++)
+      if (RC_HEATERBOARD_HEATERTOGGLE_DATA_ID)
       {
-        if ((packet.data[0] & 1 << i) == 1)
-        {
-          digitalWrite(TOGGLE_PINS[i], HIGH);
-          heater_enabled ^= 1 << i;
-          toggleOn ^= 1 << i;
-        }
-        else
-        {
-          digitalWrite(TOGGLE_PINS[i], LOW);
-          heater_enabled ^= 1 << i;
-          toggleOn ^= 1 << i;
-        }
-      }
+        for (uint8_t i = 0; i < 3; i++)
+          {
+            if ((packet.data[0] & 1 << i) == 1)
+            {
+              digitalWrite(TOGGLE_PINS[i], HIGH);
+              heater_enabled ^= 1 << i;
+            }
+            else
+            {
+              digitalWrite(TOGGLE_PINS[i], LOW);
+              heater_enabled ^= 1 << i;
+            }
+          }
+      } 
       break;
   }
 
@@ -64,19 +65,13 @@ void loop()
   uint8_t heater_overheat = 0;
   for (uint8_t i = 0; i < 3; i++)
   {
-    if (temps[i] >= 105 || !(toggleOn & 1 << i) )
+    if (temps[i] >= 105 || !(heater_enabled & 1 << i) )
     {
       digitalWrite(TOGGLE_PINS[i], LOW);
-    }
-    
-    if (temps[i] <= 95 && (toggleOn & 1 << i) )
-    {
-      digitalWrite(TOGGLE_PINS[i], HIGH);
-    }
-
-    if (temps[i] >= 115)
-    {
-      heater_overheat |= 1 << i;
+      if (temps[i] >= 115)
+      {
+        heater_overheat |= 1 << i;
+      }
     }
   }
   

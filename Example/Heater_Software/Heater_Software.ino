@@ -32,22 +32,21 @@ void loop()
   switch (packet.data_id)
   {
     case RC_HEATERBOARD_HEATERTOGGLE_DATA_ID  :
-      if (RC_HEATERBOARD_HEATERTOGGLE_DATA_ID)
-      {
         for (uint8_t i = 0; i < 3; i++)
           {
-            if ((packet.data[0] & 1 << i) == 1)
+            if ((packet.data[0] & 1 << i) == 1 && !(heater_enabled & 1 << i))
             {
               digitalWrite(TOGGLE_PINS[i], HIGH);
               heater_enabled ^= 1 << i;
             }
             else
             {
-              digitalWrite(TOGGLE_PINS[i], LOW);
-              heater_enabled ^= 1 << i;
+              if (!(heater_enabled & 1 < i))
+              {
+                heater_enabled ^= 1 << i;
+              }
             }
           }
-      } 
       break;
   }
 

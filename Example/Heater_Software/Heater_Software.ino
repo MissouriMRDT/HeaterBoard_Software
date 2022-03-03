@@ -13,7 +13,7 @@ void setup()
   pinMode(THERMO_DATA_3, INPUT);
 
 
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   //Set up rovecomm with the correct IP and the TCP server
   RoveComm.begin(RC_HEATERBOARD_FOURTHOCTET, &TCPServer);
@@ -34,14 +34,15 @@ void loop()
     case RC_HEATERBOARD_HEATERTOGGLE_DATA_ID  :
         for (uint8_t i = 0; i < 3; i++)
           {
-            if ((packet.data[0] & 1 << i) == 1 && !(heater_enabled & 1 << i))
+            if ((packet.data[0] & 1 << i) && !(heater_enabled & 1 << i))
             {
               digitalWrite(TOGGLE_PINS[i], HIGH);
+              Serial.println("Enabled");
               heater_enabled ^= 1 << i;
             }
             else
             {
-              if (!(heater_enabled & 1 < i))
+              if (heater_enabled & 1 << i)
               {
                 heater_enabled ^= 1 << i;
               }
@@ -70,6 +71,7 @@ void loop()
       if (temps[i] >= 115)
       {
         heater_overheat |= 1 << i;
+        Serial.println("over");
       }
     }
   }

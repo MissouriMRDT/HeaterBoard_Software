@@ -1,4 +1,5 @@
 #include "Heater_Software.h"
+uint8_t heater_overheat = 0;
 
 void setup()
 {
@@ -11,6 +12,10 @@ void setup()
   pinMode(THERMO_DATA_1, INPUT);
   pinMode(THERMO_DATA_2, INPUT);
   pinMode(THERMO_DATA_3, INPUT);
+
+  pinMode(HEATER_OVERHEAT_LEDS[0], OUTPUT);
+  pinMode(HEATER_OVERHEAT_LEDS[1], OUTPUT);
+  pinMode(HEATER_OVERHEAT_LEDS[2], OUTPUT);
 
 
   Serial.begin(115200);
@@ -62,7 +67,6 @@ void loop()
 
   float temps[3] = {temp1Celsius, temp2Celsius, temp3Celsius};
 
-  uint8_t heater_overheat = 0;
   for (uint8_t i = 0; i < 3; i++)
   {
     if (temps[i] >= 105 || !(heater_enabled & 1 << i) )
@@ -72,6 +76,12 @@ void loop()
       {
         heater_overheat |= 1 << i;
         Serial.println("over");
+        digitalWrite(HEATER_OVERHEAT_LEDS[i], HIGH);
+      }
+      if (temps[i] <= 115)
+      {
+        heater_overheat ^= 1 << i;
+        digitalWrite(HEATER_OVERHEAT_LEDS[i], LOW);
       }
     }
   }

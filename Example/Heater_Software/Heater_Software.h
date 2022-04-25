@@ -7,6 +7,7 @@ rovecomm_packet packet;
 
 //timekeeping variables
 uint32_t last_update_time;
+IntervalTimer telemetry();
 
 // declaring Ethernet connection
 EthernetServer TCPServer(RC_ROVECOMM_HEATERBOARD_PORT);
@@ -51,4 +52,4 @@ uint8_t heater_enabled = 0;
 uint8_t heater_overheat = 0;
 
 
-
+void telemetry();

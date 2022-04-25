@@ -28,7 +28,7 @@ void setup()
     pinMode(HEATER_OVERHEAT_LEDS[2], OUTPUT);
 
     Serial.begin(115200);
-
+    telemetry.begin(150000);
 
 
     ///////// RoveComm, Serial, and Timing /////////
@@ -38,9 +38,6 @@ void setup()
     delay(100);
 
     Serial.println("Started: ");
-
-    // update timekeeping
-    last_update_time = millis();
 }
 
 
@@ -118,21 +115,19 @@ void loop()
             // if heater_overheat == 0, the AND will yield 0, turning off the overheat variable
             digitalWrite(HEATER_OVERHEAT_LEDS[i], LOW);
         }
+
+        telemetry();
+        telemetry.begin(150000);
     }
 
 
-
-    ///////// RoveComm Telemetry and Error Notification /////////
-
-    if (millis() - last_update_time >= ROVECOMM_UPDATE_RATE)
-    {
-        if (heater_overheat)
+void telemetry()
+{
+    if (heater_overheat)
         {
             RoveComm.write(RC_HEATERBOARD_OVERHEAT_DATA_ID, RC_HEATERBOARD_OVERHEAT_DATA_COUNT, heater_overheat);
         }
 
         RoveComm.write(RC_HEATERBOARD_HEATERENABLED_DATA_ID, RC_HEATERBOARD_HEATERENABLED_DATA_COUNT, heater_enabled);
         RoveComm.write(RC_HEATERBOARD_THERMOVALUES_DATA_ID, RC_HEATERBOARD_THERMOVALUES_DATA_COUNT, tempsCelsius);
-        last_update_time = millis();
-    }
 }

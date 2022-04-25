@@ -1,9 +1,18 @@
+// Science Heater Software      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 2022 Prometheus              ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// made by Grant Brinker        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// #RoveSoHard                  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
 #include "Heater_Software.h"
-uint8_t heater_overheat = 0;
+
 
 void setup()
 {
-    // inputs to MOSFET circuits
+    ///////// Pin Assignments /////////
+
+    // inputs to MOSFET circuits for enabling/disabling heaters
     pinMode(TOGGLE_PINS[0], OUTPUT);
     pinMode(TOGGLE_PINS[1], OUTPUT);
     pinMode(TOGGLE_PINS[2], OUTPUT);
@@ -20,6 +29,10 @@ void setup()
 
     Serial.begin(115200);
 
+
+
+    ///////// RoveComm, Serial, and Timing /////////
+
     // Set up rovecomm with the correct IP and the TCP server
     RoveComm.begin(RC_HEATERBOARD_FOURTHOCTET, &TCPServer);
     delay(100);
@@ -30,8 +43,12 @@ void setup()
     last_update_time = millis();
 }
 
+
+
 void loop()
 {
+    ///////// Basestation Command Receiver /////////
+    
     packet = RoveComm.read();
     // monitoring temperature values and toggling individual heaters
     switch (packet.data_id)
@@ -58,25 +75,33 @@ void loop()
         break;
     }
 
+
+
+    ///////// Temperature Readings and Conversions /////////
+
     // temperature data from each sensor
     float temp1 = analogRead(THERMO_DATA_1);
     float temp2 = analogRead(THERMO_DATA_2);
     float temp3 = analogRead(THERMO_DATA_3);
 
     // changes ADC values from temperature sensors to Celsius
-    float temp1Celsius = map(temp1, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000;
-    float temp2Celsius = map(temp2, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000;
-    float temp3Celsius = map(temp3, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000;
+    float temp1Celsius = (map(temp1, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
+    float temp2Celsius = (map(temp2, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
+    float temp3Celsius = (map(temp3, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
 
-    float temps[3] = {temp1Celsius, temp2Celsius, temp3Celsius};
+    float tempsCelsius[3] = {temp1Celsius, temp2Celsius, temp3Celsius};
+
+
+
+    ///////// Temperature Regulation Logic /////////
 
     for (uint8_t i = 0; i < 3; i++)
     {
-        if (temps[i] >= 105 || !(heater_enabled & (1 << i)))
+        if (tempsCelsius[i] >= 105 || !(heater_enabled & (1 << i)))
         {
             digitalWrite(TOGGLE_PINS[i], LOW);
 
-            if (temps[i] >= 115)
+            if (tempsCelsius[i] >= 115)
             {
                 heater_overheat |= 1 << i; // OR the overheat var with 1 to make it 1
                 Serial.println("over");
@@ -84,7 +109,7 @@ void loop()
             }
         }
 
-        if (temps[i] <= 105)
+        if (tempsCelsius[i] <= 105)
         {
             heater_overheat &= !(1 << i);
             // if a heater is overheated, its value in the bit array is 1
@@ -95,7 +120,10 @@ void loop()
         }
     }
 
-    // sends data to basestation
+
+
+    ///////// RoveComm Telemetry and Error Notification /////////
+
     if (millis() - last_update_time >= ROVECOMM_UPDATE_RATE)
     {
         if (heater_overheat)

@@ -1,7 +1,7 @@
-// Science Heater Software      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// 2022 Prometheus              ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// made by Grant Brinker        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// #RoveSoHard                  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Science Heater Software      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 2022 Prometheus              ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// made by Grant Brinker        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// #RoveSoHard                  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -28,7 +28,7 @@ void setup()
     pinMode(HEATER_OVERHEAT_LEDS[2], OUTPUT);
 
     Serial.begin(115200);
-    telemetry.begin(150000);
+    Telemetry.begin(telemetry, 150000);
 
 
     ///////// RoveComm, Serial, and Timing /////////
@@ -82,11 +82,11 @@ void loop()
     float temp3 = analogRead(THERMO_DATA_3);
 
     // changes ADC values from temperature sensors to Celsius
-    float temp1Celsius = (map(temp1, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
-    float temp2Celsius = (map(temp2, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
-    float temp3Celsius = (map(temp3, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
+    tempsCelsius[0] = (map(temp1, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
+    tempsCelsius[1] = (map(temp2, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
+    tempsCelsius[2] = (map(temp3, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
 
-    float tempsCelsius[3] = {temp1Celsius, temp2Celsius, temp3Celsius};
+    
 
 
 
@@ -115,19 +115,17 @@ void loop()
             // if heater_overheat == 0, the AND will yield 0, turning off the overheat variable
             digitalWrite(HEATER_OVERHEAT_LEDS[i], LOW);
         }
-
-        telemetry();
-        telemetry.begin(150000);
     }
-
+}
 
 void telemetry()
 {
     if (heater_overheat)
-        {
-            RoveComm.write(RC_HEATERBOARD_OVERHEAT_DATA_ID, RC_HEATERBOARD_OVERHEAT_DATA_COUNT, heater_overheat);
-        }
+    {
+        RoveComm.write(RC_HEATERBOARD_OVERHEAT_DATA_ID, RC_HEATERBOARD_OVERHEAT_DATA_COUNT, heater_overheat);
+    }
 
-        RoveComm.write(RC_HEATERBOARD_HEATERENABLED_DATA_ID, RC_HEATERBOARD_HEATERENABLED_DATA_COUNT, heater_enabled);
-        RoveComm.write(RC_HEATERBOARD_THERMOVALUES_DATA_ID, RC_HEATERBOARD_THERMOVALUES_DATA_COUNT, tempsCelsius);
+    RoveComm.write(RC_HEATERBOARD_HEATERENABLED_DATA_ID, RC_HEATERBOARD_HEATERENABLED_DATA_COUNT, heater_enabled);
+    RoveComm.write(RC_HEATERBOARD_THERMOVALUES_DATA_ID, RC_HEATERBOARD_THERMOVALUES_DATA_COUNT, tempsCelsius);
+    Telemetry.begin(telemetry, 150000);
 }

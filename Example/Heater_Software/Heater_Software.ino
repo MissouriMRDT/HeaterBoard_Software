@@ -33,8 +33,8 @@ void setup()
 
     ///////// RoveComm, Serial, and Timing /////////
 
-    // Set up rovecomm with the correct IP and the TCP server
-    RoveComm.begin(RC_HEATERBOARD_FOURTHOCTET, &TCPServer);
+    // Set up RoveComm with the correct IP and the TCP server
+    RoveComm.begin(RC_HEATERBOARD_FOURTHOCTET, &TCPServer, RC_ROVECOMM_HEATERBOARD_MAC);
     delay(100);
 
     Serial.println("Started: ");
@@ -132,7 +132,7 @@ void loop()
         }
 
         RoveComm.write(RC_HEATERBOARD_HEATERENABLED_DATA_ID, RC_HEATERBOARD_HEATERENABLED_DATA_COUNT, heater_enabled);
-        RoveComm.write(RC_HEATERBOARD_THERMOVALUES_DATA_ID, RC_HEATERBOARD_THERMOVALUES_DATA_COUNT, temps);
+        RoveComm.write(RC_HEATERBOARD_THERMOVALUES_DATA_ID, RC_HEATERBOARD_THERMOVALUES_DATA_COUNT, tempsCelsius);
         last_update_time = millis();
     }
 }

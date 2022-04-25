@@ -6,7 +6,6 @@ RoveCommEthernet RoveComm;
 rovecomm_packet packet;
 
 //timekeeping variables
-uint32_t last_update_time;
 IntervalTimer Telemetry;
 
 // declaring Ethernet connection

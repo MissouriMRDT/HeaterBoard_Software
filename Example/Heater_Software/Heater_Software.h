@@ -40,9 +40,9 @@ uint8_t HEATER_OVERHEAT_LEDS[3] = {HEATER_1_OVERHEAT_LED, HEATER_2_OVERHEAT_LED,
 
 // conversions from ADC values to Celsius
 float TEMP_ADC_MIN = 0;
-float TEMP_ADC_MAX = 4096; //bits
+float TEMP_ADC_MAX = 4095; //bits
 float TEMP_MIN = 0;
-float TEMP_MAX = 160000; // mdeg C
+float TEMP_MAX = 144000; // mdeg C
 
 // enable command for individual heaters
 uint8_t heater_enabled = 0;

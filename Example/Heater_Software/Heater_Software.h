@@ -47,6 +47,9 @@ float TEMP_MAX = 160000; // mdeg C
 // enable command for individual heaters
 uint8_t heater_enabled = 0;
 float tempsCelsius[3];
+float temp1 = 0;
+float temp2 = 0;
+float temp3 = 0;
 
 // bitmask for overheating
 uint8_t heater_overheat = 0;

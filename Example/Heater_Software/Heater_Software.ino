@@ -28,7 +28,7 @@ void setup()
     pinMode(HEATER_OVERHEAT_LEDS[2], OUTPUT);
 
     Serial.begin(115200);
-    Telemetry.begin(telemetry, 150000);
+    Telemetry.begin(telemetry, 1500000);
 
 
     ///////// RoveComm, Serial, and Timing /////////
@@ -127,7 +127,6 @@ void telemetry()
 
     RoveComm.write(RC_HEATERBOARD_HEATERENABLED_DATA_ID, RC_HEATERBOARD_HEATERENABLED_DATA_COUNT, heater_enabled);
     RoveComm.write(RC_HEATERBOARD_THERMOVALUES_DATA_ID, RC_HEATERBOARD_THERMOVALUES_DATA_COUNT, tempsCelsius);
-    Telemetry.begin(telemetry, 150000);
     Serial.println(temp1);
     Serial.println(temp2);
     Serial.println(temp3);

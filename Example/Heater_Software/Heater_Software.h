@@ -11,8 +11,6 @@ IntervalTimer Telemetry;
 // declaring Ethernet connection
 EthernetServer TCPServer(RC_ROVECOMM_HEATERBOARD_PORT);
 
-
-
 ///////// Pin Definitions /////////
 
 // signals for gate drivers
@@ -34,8 +32,6 @@ uint8_t TOGGLE_PINS[3] = {HEATER_TOGGLE_PIN_1, HEATER_TOGGLE_PIN_2, HEATER_TOGGL
 
 uint8_t HEATER_OVERHEAT_LEDS[3] = {HEATER_1_OVERHEAT_LED, HEATER_2_OVERHEAT_LED, HEATER_3_OVERHEAT_LED};
 
-
-
 ///////// Variables /////////
 
 // conversions from ADC values to Celsius
@@ -53,6 +49,5 @@ float temp3 = 0;
 
 // bitmask for overheating
 uint8_t heater_overheat = 0;
-
 
 void telemetry();

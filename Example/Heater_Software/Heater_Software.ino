@@ -3,10 +3,7 @@
 // made by Grant Brinker        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // #RoveSoHard                  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
 #include "Heater_Software.h"
-
 
 void setup()
 {
@@ -28,14 +25,13 @@ void setup()
     pinMode(HEATER_OVERHEAT_LEDS[2], OUTPUT);
 
     Serial.begin(115200);
-    Telemetry.begin(telemetry, 1500000);
-
 
     ///////// RoveComm, Serial, and Timing /////////
 
     // Set up RoveComm with the correct IP and the TCP server
     RoveComm.begin(RC_HEATERBOARD_FOURTHOCTET, &TCPServer, RC_ROVECOMM_HEATERBOARD_MAC);
     delay(100);
+    Telemetry.begin(telemetry, 1500000);
 
     Serial.println("Started: ");
 }
@@ -63,38 +59,30 @@ void loop()
 
             else
             {
-                if (!(heater_enabled & (1 << i)))
-                {
-                    digitalWrite(TOGGLE_PINS[i], LOW);
-                }
+                digitalWrite(TOGGLE_PINS[i], LOW);
+                Serial.println("Disabled");
             }
         }
         break;
     }
 
-
-
     ///////// Temperature Readings and Conversions /////////
 
     // temperature data from each sensor
-    float temp1 = analogRead(THERMO_DATA_1);
-    float temp2 = analogRead(THERMO_DATA_2);
-    float temp3 = analogRead(THERMO_DATA_3);
+    temp1 = analogRead(THERMO_DATA_1);
+    temp2 = analogRead(THERMO_DATA_2);
+    temp3 = analogRead(THERMO_DATA_3);
 
     // changes ADC values from temperature sensors to Celsius
     tempsCelsius[0] = (map(temp1, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
     tempsCelsius[1] = (map(temp2, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
     tempsCelsius[2] = (map(temp3, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
 
-    
-
-
-
     ///////// Temperature Regulation Logic /////////
 
     for (uint8_t i = 0; i < 3; i++)
     {
-        if (tempsCelsius[i] >= 105 || !(heater_enabled & (1 << i)))
+        if (tempsCelsius[i] >= 105 && (heater_enabled & (1 << i)))
         {
             digitalWrite(TOGGLE_PINS[i], LOW);
 
@@ -124,13 +112,6 @@ void telemetry()
     {
         RoveComm.write(RC_HEATERBOARD_OVERHEAT_DATA_ID, RC_HEATERBOARD_OVERHEAT_DATA_COUNT, heater_overheat);
     }
-
     RoveComm.write(RC_HEATERBOARD_HEATERENABLED_DATA_ID, RC_HEATERBOARD_HEATERENABLED_DATA_COUNT, heater_enabled);
     RoveComm.write(RC_HEATERBOARD_THERMOVALUES_DATA_ID, RC_HEATERBOARD_THERMOVALUES_DATA_COUNT, tempsCelsius);
-    Serial.println(temp1);
-    Serial.println(temp2);
-    Serial.println(temp3);
-    Serial.println(tempsCelsius[0]);
-    Serial.println(tempsCelsius[1]);
-    Serial.println(tempsCelsius[2]);
 }

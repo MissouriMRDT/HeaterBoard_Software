@@ -13,16 +13,43 @@ void setup()
     pinMode(TOGGLE_PINS[0], OUTPUT);
     pinMode(TOGGLE_PINS[1], OUTPUT);
     pinMode(TOGGLE_PINS[2], OUTPUT);
+    pinMode(TOGGLE_PINS[3], OUTPUT);
+    pinMode(TOGGLE_PINS[4], OUTPUT);
+    pinMode(TOGGLE_PINS[5], OUTPUT);
+    pinMode(TOGGLE_PINS[6], OUTPUT);
+    pinMode(TOGGLE_PINS[7], OUTPUT);
+    pinMode(TOGGLE_PINS[8], OUTPUT);
+    pinMode(TOGGLE_PINS[9], OUTPUT);
+    pinMode(TOGGLE_PINS[10], OUTPUT);
+    pinMode(TOGGLE_PINS[11], OUTPUT);
 
     // data from temperature sensors
     pinMode(THERMO_DATA_1, INPUT);
     pinMode(THERMO_DATA_2, INPUT);
     pinMode(THERMO_DATA_3, INPUT);
+    pinMode(THERMO_DATA_4, INPUT);
+    pinMode(THERMO_DATA_5, INPUT);
+    pinMode(THERMO_DATA_6, INPUT);
+    pinMode(THERMO_DATA_7, INPUT);
+    pinMode(THERMO_DATA_8, INPUT);
+    pinMode(THERMO_DATA_9, INPUT);
+    pinMode(THERMO_DATA_10, INPUT);
+    pinMode(THERMO_DATA_11, INPUT);
+    pinMode(THERMO_DATA_12, INPUT);
 
     // sets overheat LED pins
     pinMode(HEATER_OVERHEAT_LEDS[0], OUTPUT);
     pinMode(HEATER_OVERHEAT_LEDS[1], OUTPUT);
     pinMode(HEATER_OVERHEAT_LEDS[2], OUTPUT);
+    pinMode(HEATER_OVERHEAT_LEDS[3], OUTPUT);
+    pinMode(HEATER_OVERHEAT_LEDS[4], OUTPUT);
+    pinMode(HEATER_OVERHEAT_LEDS[5], OUTPUT);
+    pinMode(HEATER_OVERHEAT_LEDS[6], OUTPUT);
+    pinMode(HEATER_OVERHEAT_LEDS[7], OUTPUT);
+    pinMode(HEATER_OVERHEAT_LEDS[8], OUTPUT);
+    pinMode(HEATER_OVERHEAT_LEDS[9], OUTPUT);
+    pinMode(HEATER_OVERHEAT_LEDS[10], OUTPUT);
+    pinMode(HEATER_OVERHEAT_LEDS[11], OUTPUT);
 
     Serial.begin(115200);
 
@@ -49,7 +76,7 @@ void loop()
     case RC_HEATERBOARD_HEATERTOGGLE_DATA_ID:
         heater_enabled = (uint8_t)packet.data[0];
 
-        for (uint8_t i = 0; i < 3; i++)
+        for (uint8_t i = 0; i < 12; i++)
         {
             if (heater_enabled & (1 << i))
             {
@@ -72,11 +99,29 @@ void loop()
     temp1 = analogRead(THERMO_DATA_1);
     temp2 = analogRead(THERMO_DATA_2);
     temp3 = analogRead(THERMO_DATA_3);
+    temp4 = analogRead(THERMO_DATA_4);
+    temp5 = analogRead(THERMO_DATA_5);
+    temp6 = analogRead(THERMO_DATA_6);
+    temp7 = analogRead(THERMO_DATA_7);
+    temp8 = analogRead(THERMO_DATA_8);
+    temp9 = analogRead(THERMO_DATA_9);
+    temp10 = analogRead(THERMO_DATA_10);
+    temp11 = analogRead(THERMO_DATA_11);
+    temp12 = analogRead(THERMO_DATA_12);
 
     // changes ADC values from temperature sensors to Celsius
     tempsCelsius[0] = (map(temp1, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
     tempsCelsius[1] = (map(temp2, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
     tempsCelsius[2] = (map(temp3, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
+    tempsCelsius[3] = (map(temp1, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
+    tempsCelsius[0] = (map(temp1, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
+    tempsCelsius[0] = (map(temp1, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
+    tempsCelsius[0] = (map(temp1, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
+    tempsCelsius[0] = (map(temp1, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
+    tempsCelsius[0] = (map(temp1, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
+    tempsCelsius[0] = (map(temp1, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
+    tempsCelsius[0] = (map(temp1, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
+    tempsCelsius[0] = (map(temp1, TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
 
     ///////// Temperature Regulation Logic /////////
 

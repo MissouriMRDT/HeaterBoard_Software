@@ -71,27 +71,16 @@ uint8_t HEATER_OVERHEAT_LEDS[HEATER_COUNT] =  {HEATER_1_OVERHEAT_LED, HEATER_2_O
 ///////// Variables /////////
 
 // conversions from ADC values to Celsius
-float TEMP_ADC_MIN = 0;
-float TEMP_ADC_MAX = 4095; //bits
-float TEMP_MIN = 0;
-float TEMP_MAX = 144000; // mdeg C
+const float TEMP_ADC_MIN = 0;
+const float TEMP_ADC_MAX = 123; //bits
+const float TEMP_MIN = 0;
+const float TEMP_MAX = 23500; // mdeg C
+const uint16_t tempScalar = 1060;
 
 // enable command for individual heaters
 uint16_t heater_enabled = 0;
 float tempsCelsius[HEATER_COUNT];
-float temp1;
-float temp2;
-float temp3;
-float temp4;
-float temp5;
-float temp6;
-float temp7;
-float temp8;
-float temp9;
-float temp10;
-float temp11;
-float temp12;
-float TEMP_ADC_READINGS[HEATER_COUNT] = {temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, temp11, temp12};
+float TEMP_ADC_READINGS[HEATER_COUNT];
 
 // bitmask for overheating
 uint16_t heater_overheat = 0;

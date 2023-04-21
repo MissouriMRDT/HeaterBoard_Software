@@ -62,9 +62,9 @@ void loop()
     for (uint8_t i = 0; i < HEATER_COUNT; i++)
     {
         // temperature data from each sensor
-        TEMP_ADC_READINGS[i] = analogRead(THERMO_DATA_PINS);
+        TEMP_ADC_READINGS[i] = analogRead(THERMO_DATA_PINS[i]);
         // changes ADC values from temperature sensors to Celsius
-        tempsCelsius[i] = (map(TEMP_ADC_READINGS[i], TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
+        tempsCelsius[i] = (tempScalar * map(TEMP_ADC_READINGS[i], TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
     }
     
 

@@ -39,6 +39,7 @@ void loop()
     case RC_HEATERBOARD_HEATERTOGGLE_DATA_ID:
         heater_enabled = (uint16_t)packet.data[0];
         toggleHeaters();
+        break;
     }
 
 
@@ -65,7 +66,6 @@ void toggleHeaters()
                 Serial.println("Disabled");
             }
         }
-        break;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

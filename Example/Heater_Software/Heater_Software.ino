@@ -28,18 +28,30 @@ void setup()
     Serial.println("Started: ");
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void loop()
-{
-    ///////// Basestation Command Receiver /////////
-    
+{   
     packet = RoveComm.read();
     // monitoring temperature values and toggling individual heaters
     switch (packet.data_id)
     {
     case RC_HEATERBOARD_HEATERTOGGLE_DATA_ID:
         heater_enabled = (uint16_t)packet.data[0];
+        toggleHeaters();
+    }
 
-        for (uint8_t i = 0; i < HEATER_COUNT; i++)
+
+    readTemp();
+    regulateTemp();
+    telemetry();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void toggleHeaters()
+{
+    for (uint8_t i = 0; i < HEATER_COUNT; i++)
         {
             if (heater_enabled & (1 << i))
             {
@@ -54,11 +66,12 @@ void loop()
             }
         }
         break;
-    }
+}
 
-    ///////// Temperature Readings and Conversions /////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-   
+void readTemp() // read temperature sensor data and convert it to Celcius
+{
     for (uint8_t i = 0; i < HEATER_COUNT; i++)
     {
         // temperature data from each sensor
@@ -66,10 +79,12 @@ void loop()
         // changes ADC values from temperature sensors to Celsius
         tempsCelsius[i] = (tempScalar * map(TEMP_ADC_READINGS[i], TEMP_ADC_MIN, TEMP_ADC_MAX, TEMP_MIN, TEMP_MAX) / 1000);
     }
-    
+}
 
-    ///////// Temperature Regulation Logic /////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void regulateTemp() // turn off heaters if they get a little spicy and enabled overheat LEDs if they're very spicy
+{
     for (uint8_t i = 0; i < HEATER_COUNT; i++)
     {
         if (tempsCelsius[i] >= 105 && (heater_enabled & (1 << i)))
@@ -96,7 +111,9 @@ void loop()
     }
 }
 
-void telemetry()
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void telemetry()    // send enabled heaters, temperatures, and overheating blocks to basestation
 {
     if (heater_overheat) RoveComm.write(RC_HEATERBOARD_OVERHEAT_DATA_ID, RC_HEATERBOARD_OVERHEAT_DATA_COUNT, heater_overheat);
     RoveComm.write(RC_HEATERBOARD_HEATERENABLED_DATA_ID, RC_HEATERBOARD_HEATERENABLED_DATA_COUNT, heater_enabled);

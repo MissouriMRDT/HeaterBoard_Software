@@ -21,7 +21,7 @@ void setup()
     ///////// RoveComm, Serial, and Timing /////////
 
     // Set up RoveComm with the correct IP and the TCP server
-    RoveComm.begin(RC_HEATERBOARD_FOURTHOCTET, &TCPServer, RC_ROVECOMM_HEATERBOARD_MAC);
+    RoveComm.begin(RC_HEATERBOARD_FIRSTOCTET, RC_HEATERBOARD_SECONDOCTET, RC_HEATERBOARD_THIRDOCTET, RC_HEATERBOARD_FOURTHOCTET, &TCPServer);
     delay(100);
     Telemetry.begin(telemetry, 1500000);
 

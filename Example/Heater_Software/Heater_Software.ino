@@ -56,14 +56,25 @@ void toggleHeaters()
         {
             if (heater_enabled & (1 << i))
             {
-                digitalWrite(TOGGLE_PINS[i], HIGH);
-                Serial.println("Enabled");
+                if (numHeatersEnabled <= maxHeatersEnabled)
+                {
+                    digitalWrite(TOGGLE_PINS[i], HIGH);
+                    numHeatersEnabled++;
+                    Serial.print("Enabled heater ");
+                    Serial.println(i+1);
+                }
+                else
+                {
+                    Serial.println("Warning: Running more than 6 heaters will kill the board!");
+                }
             }
 
             else
             {
                 digitalWrite(TOGGLE_PINS[i], LOW);
-                Serial.println("Disabled");
+                numHeatersEnabled--;
+                Serial.print("Disabled heater ");
+                Serial.println(i+1);
             }
         }
 }

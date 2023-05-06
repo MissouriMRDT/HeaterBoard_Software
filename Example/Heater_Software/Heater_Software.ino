@@ -52,38 +52,39 @@ void loop()
 
 void toggleHeaters()
 {
-    //numHeatersEnabled=0;
     for (uint8_t i = 0; i < HEATER_COUNT; i++)
         {
             if (heater_enabled & (1 << i))
             {
-                /*if (numHeatersEnabled <= maxHeatersEnabled)
+                if (numHeatersEnabled < MAX_HEATERS_ENABLED) // if 5 are on, the if conditional will be true and the number will increase to 6
                 {
                     digitalWrite(TOGGLE_PINS[i], HIGH);
-                    numHeatersEnabled++;
+
                     Serial.print("Enabled heater ");
                     Serial.println(i+1);
+
+                    numHeatersEnabled |= (1<<i);
                 }
                 else
                 {
                     Serial.println("Warning: Running more than 6 heaters will kill the board!");
-                }*/
-                digitalWrite(TOGGLE_PINS[i], HIGH);
+                }
             }
-
             else
             {
                 digitalWrite(TOGGLE_PINS[i], LOW);
-                //numHeatersEnabled--;
+
                 Serial.print("Disabled heater ");
                 Serial.println(i+1);
+
+                numHeatersEnabled &= !(1<<i);
             }
         }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void readTemp() // read temperature sensor data and convert it to Celcius
+void readTemp() // read temperature sensor data and convert it to Celsius
 {
     for (uint8_t i = 0; i < HEATER_COUNT; i++)
     {

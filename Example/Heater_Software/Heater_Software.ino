@@ -43,7 +43,7 @@ void loop()
     }
 
 
-    readTemp();
+    //readTemp();
     regulateTemp();
     telemetry();
 }
@@ -52,11 +52,12 @@ void loop()
 
 void toggleHeaters()
 {
+    //numHeatersEnabled=0;
     for (uint8_t i = 0; i < HEATER_COUNT; i++)
         {
             if (heater_enabled & (1 << i))
             {
-                if (numHeatersEnabled <= maxHeatersEnabled)
+                /*if (numHeatersEnabled <= maxHeatersEnabled)
                 {
                     digitalWrite(TOGGLE_PINS[i], HIGH);
                     numHeatersEnabled++;
@@ -66,13 +67,14 @@ void toggleHeaters()
                 else
                 {
                     Serial.println("Warning: Running more than 6 heaters will kill the board!");
-                }
+                }*/
+                digitalWrite(TOGGLE_PINS[i], HIGH);
             }
 
             else
             {
                 digitalWrite(TOGGLE_PINS[i], LOW);
-                numHeatersEnabled--;
+                //numHeatersEnabled--;
                 Serial.print("Disabled heater ");
                 Serial.println(i+1);
             }

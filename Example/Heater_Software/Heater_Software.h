@@ -79,6 +79,7 @@ const uint16_t tempScalar = 1060;
 
 // enable command for individual heaters
 uint16_t heater_enabled = 0;
+uint16_t last_heater_enabled = 0;
 #define MAX_HEATERS_ENABLED 6
 uint8_t numHeatersEnabled = 0;
 float tempsCelsius[HEATER_COUNT];
@@ -88,6 +89,7 @@ float TEMP_ADC_READINGS[HEATER_COUNT];
 uint16_t heater_overheat = 0;
 
 void toggleHeaters();
+void calculateHeatersOn();
 void readTemp();
 void regulateTemp();
 void telemetry();

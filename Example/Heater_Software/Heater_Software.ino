@@ -38,6 +38,7 @@ void loop()
     {
     case RC_HEATERBOARD_HEATERTOGGLE_DATA_ID:
         heater_enabled = (uint16_t)packet.data[0];
+        calculateHeatersOn();
         toggleHeaters();
         break;
     }
@@ -62,8 +63,6 @@ void toggleHeaters()
 
                     Serial.print("Enabled heater ");
                     Serial.println(i+1);
-
-                    numHeatersEnabled |= (1<<i);
                 }
                 else
                 {
@@ -76,10 +75,27 @@ void toggleHeaters()
 
                 Serial.print("Disabled heater ");
                 Serial.println(i+1);
-
-                numHeatersEnabled &= !(1<<i);
             }
         }
+    
+    last_heater_enabled = heater_enabled;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void calculateHeatersOn()
+{
+    for (uint8_t i=0; i < HEATER_COUNT; i++)
+    {
+        if (((heater_enabled & (1<<i))>>i) > ((last_heater_enabled & (1<<i))>>i))
+        {
+            numHeatersEnabled++;
+        }
+        else if (((heater_enabled & (1<<i))>>i) < ((last_heater_enabled & (1<<i))>>i))
+        {
+            numHeatersEnabled--;
+        }
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

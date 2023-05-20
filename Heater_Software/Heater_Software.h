@@ -43,7 +43,8 @@ const float TEMP_SCALE = (TEMP_MAX - TEMP_MIN) / (ADC_MAX - ADC_MIN);
 #define MAX_HEATERS_ENABLED 6
 uint16_t heater_enable = 0; // bitmask
 uint16_t heater_overheat = 0; // bitmask
-float heater_temp[HEATER_COUNT];
+float heater_temp_read[HEATER_COUNT];
+float heater_temp_set[HEATER_COUNT];
 
 
 // Methods

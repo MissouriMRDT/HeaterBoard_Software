@@ -47,12 +47,10 @@ void loop() {
 
         case RC_HEATERBOARD_HEATERSETTEMP_DATA_ID:
         {
-            float* data;
-            data = (float*)packet.data;
+            float* data = (float*) packet.data;
 
             for (int i = 0; i < HEATER_COUNT; i++) {
                 heater_temp_set[i] = data[i];
-                // Didn't finish this, sorry Malacki
             }
 
             break;
@@ -69,7 +67,7 @@ void loop() {
 
     // Output to Heater Pins
     for (uint8_t i = 0; i < HEATER_COUNT; i++) {
-        bool enable = (heater_enable & (1<<i)) && !(heater_temp_read[i] > 105);
+        bool enable = (heater_enable & (1<<i)) && (heater_temp_read[i] < heater_temp_set[i]);
 
         digitalWrite(TOGGLE_PINS[i], enable);
     }
